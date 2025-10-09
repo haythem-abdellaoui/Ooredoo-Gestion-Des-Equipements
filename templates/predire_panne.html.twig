@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooredoo - Gestion des Stocks</title>
+
+  <!-- Google Fonts (Roboto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS (à charger avant ton CSS perso) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Ton CSS personnalisé (toujours en dernier pour qu’il ne soit pas écrasé) -->
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar shadow-sm rounded-end animate__animated animate__fadeInLeft">
+      <div class="sidebar-header">
+        <div><img src ="{{asset('images/ooredoo4.png')}}" width="175" height="48" ></div>
+      </div>
+      <nav>
+       <ul>
+          <li><a href="{{path('app_')}}" style="text-decoration:none; color:inherit;"> Tableau De Bord </a></li>
+          <li><a href="{{ path('ajouter_equipement') }}" style="text-decoration:none; color:inherit;">Ajouter Des Equipements</a></li>
+          <li><a href="{{ path('statistiques') }}"style="text-decoration:none; color:inherit;">Statistiques</a></li>
+          <li><a href="{{ path('parametres') }}"style="text-decoration:none; color:inherit;"> Paramètres </a></li>
+          <li class="active"><a href="{{ path('predire_panne') }}"style="text-decoration:none; color:inherit;"> Prédire Une Panne </a></li>
+          <li><a href="{{ path('logout') }}"style="text-decoration:none; color:inherit;"> Se Déconnecter </a></li>
+
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="main-header d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown animate__delay-1s">
+        <h1 class="fw-bold text-danger">Prédire Une Panne Dans Les 30 Jours</h1>
+      </header>
+      {% if resultat_panne is defined and resultat_panne %}
+        <div class="alert alert-info text-center fw-bold my-4 animate__animated animate__fadeInDown">
+          Probabilité de panne : {{ (resultat_panne * 100)|number_format(2, '.', ' ') }} %
+        </div>
+      {% endif %}
+      <!-- Formulaire d'ajout d'équipement -->
+      <section class="form-section bg-white rounded-4 shadow p-5 animate__animated animate__fadeInUp animate__delay-2s">
+        <h2 class="mb-4 text-center text-danger fw-bold animate__animated animate__fadeInDown">Veuillez saisir les infos nécessaires</h2>
+        <form action="{{ path('predire_panne') }}" method="post" class="row g-3 needs-validation" novalidate>
+          <div class="col-md-6">
+            <label for="type_machine" class="form-label">Type De Machine</label>
+            <select class="form-select" id="type_machine" name="type_machine" required>
+              <option value="" selected disabled>-- Choisir un type --</option>
+              <option value="PC">PC</option>
+              <option value="Portable">Portable</option>
+              <option value="Serveur">Serveur</option>
+              <option value="Imprimante">Imprimante</option>
+              <option value="Scanner">Scanner</option>
+              <option value="Routeur">Routeur</option>
+              <option value="Switch">Switch</option>
+              <option value="Onduleur">Onduleur</option>
+            </select>
+            <div class="invalid-feedback">Veuillez sélectionner un type.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="heures_utilisation" class="form-label">Heures D'utilisation</label>
+            <input type="number" class="form-control" id="heures_utilisation" name="heures_utilisation" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="temperature" class="form-label">Température Moyenne</label>
+            <input type="number" class="form-control" id="temperature" name="temperature" step="any" required>
+            <div class="invalid-feedback">Veuillez entrer une température valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="nbre_panne" class="form-label">Nombre Des Pannes Précédentes</label>
+            <input type="number" class="form-control" id="nbre_panne" name="nbre_panne" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="age" class="form-label">Age En Jours</label>
+            <input type="number" class="form-control" id="age" name="age" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="nbre_redemarrage" class="form-label">Nombre De Redémarrages</label>
+            <input type="number" class="form-control" id="nbre_redemarrage" name="nbre_redemarrage" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="charge_cpu" class="form-label">Charge Moyenne De CPU</label>
+            <input type="number" class="form-control" id="charge_cpu" name="charge_cpu" min="0" max="100" required>
+            <div class="invalid-feedback">Veuillez entrer un pourcentage valide (0-100).</div>
+          </div>
+          <div class="col-md-6">
+            <label for="nbre_document" class="form-label">Nombre De Documents Imprimés</label>
+            <input type="number" class="form-control" id="nbre_document" name="nbre_document" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="marque" class="form-label">Marque</label>
+            <input type="text" class="form-control" id="marque" name="marque" pattern="^[A-Za-zÀ-ÿ\s\-]+$" required>
+            <div class="invalid-feedback">Veuillez entrer une marque valide (lettres uniquement).</div>
+          </div>
+          <div class="col-md-6">
+            <label for="localisation" class="form-label">Localisation</label>
+            <input type="text" class="form-control" id="localisation" name="localisation" required>
+            <div class="invalid-feedback">Veuillez entrer une localisation valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="nbre_alerte" class="form-label">Nombre Des Alertes Smart</label>
+            <input type="number" class="form-control" id="nbre_alerte" name="nbre_alerte" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="nbre_intervention" class="form-label">Nombre Des Interventions Par Les Techniciens</label>
+            <input type="number" class="form-control" id="nbre_intervention" name="nbre_intervention" min="0" required>
+            <div class="invalid-feedback">Veuillez entrer un nombre valide.</div>
+          </div>
+          <div class="col-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-danger btn-lg shadow-sm animate__animated animate__pulse">Prédire</button>
+          </div>
+        </form>
+        
+      </section>
+    </main>
+  </div>
+  <!-- Bootstrap JS (pour les animations et composants interactifs) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6DQD1KQ9Q8cbh6wr6LrZ8p1ztB1zBOeEnQyZ0P5hF6Q" crossorigin="anonymous"></script>
+  <script>
+    // Validation Bootstrap custom
+    (() => {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault(); // Empêche l’envoi si invalide
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  </script>
+  
+</body>
+</html> 

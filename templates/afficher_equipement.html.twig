@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooredoo - Gestion des Stocks</title>
+  <!-- Google Fonts (Roboto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS (à charger avant ton CSS perso) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Ton CSS personnalisé (toujours en dernier pour qu'il ne soit pas écrasé) -->
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  
+  <style>
+  .edit-form-errors {
+    font-size: 0.95rem;
+    color: #dc3545;
+    margin-bottom: 10px;
+  }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar shadow-sm rounded-end animate__animated animate__fadeInLeft">
+      <div class="sidebar-header">
+        <div><img src ="{{asset('images/ooredoo4.png')}}" width="175" height="48" ></div>
+      </div>
+      <nav>
+        <ul>
+          <li class="active"><a href="{{path('app_')}}" style="text-decoration:none; color:inherit;"> Tableau De Bord </a></li>
+          <li><a href="{{ path('ajouter_equipement') }}" style="text-decoration:none; color:inherit;">Ajouter Des Equipements</a></li>
+          <li><a href="{{ path('statistiques') }}"style="text-decoration:none; color:inherit;">Statistiques</a></li>
+          <li><a href="{{ path('parametres') }}"style="text-decoration:none; color:inherit;"> Paramètres </a></li>
+          <li><a href="{{ path('predire_panne') }}"style="text-decoration:none; color:inherit;"> Prédire Une Panne </a></li>
+          <li><a href="{{ path('logout') }}"style="text-decoration:none; color:inherit;"> Se Déconnecter </a></li>
+
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="main-header d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown animate__delay-1s">
+        <h1 class="fw-bold text-danger">Gestion des Stocks d'Équipements</h1>
+        <form action="{{ path('ajouter_equipement') }}" method="get">
+          <button type="submit" class="add-btn btn btn-danger btn-lg shadow-sm animate__animated animate__pulse animate__infinite">+ Ajouter un équipement</button>
+        </form>
+      </header>
+      <section class="table-section rounded-4 shadow p-4 animate__animated animate__fadeInUp animate__delay-2s">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Machine</th>
+              <th>Modèle</th>
+              <th>Numéro de série</th>
+              <th>Statut</th>
+              <th>Etat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for equipement in equipements %}
+              <tr class="equipement-row" data-id="{{ equipement.getIdEquipement() }}">
+                <td>{{ equipement.machine }}</td>
+                <td>{{ equipement.modele }}</td>
+                <td>{{ equipement.getNumeroDeSerie() }}</td>
+                {% set statut = equipement.getStatut()|trim %}
+                {% if statut == "En stock" %}
+                  <td><span class="status ok">{{ statut }}</span></td>
+                {% elseif statut == "Stock bas" %}
+                  <td><span class="status low">{{ statut }}</span></td>
+                {% else %}
+                  <td><span class="status out">{{ statut }}</span></td>
+                {% endif %}
+
+                <td>{{ equipement.etat }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button id="export-excel" class="btn btn-success mt-3" style="width: 200px;">Exporter En Excel</button>
+      </section>
+    </main>
+  </div>
+  <div id="context-menu" style="display:none; position:absolute; z-index:1000; background:#fff; border:1px solid #ccc; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.15); min-width:160px;">
+    <ul style="list-style:none; margin:0; padding:8px 0;">
+      <li style="padding:8px 16px; cursor:pointer;" id="edit-item">Modifier l'élément</li>
+      <li style="padding:8px 16px; cursor:pointer; color:#dc3545;" id="delete-item">Supprimer l'élément</li>
+    </ul>
+  </div>
+  <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:8px; padding:32px 24px; min-width:320px; box-shadow:0 2px 16px rgba(0,0,0,0.18); text-align:center;">
+      <p style="font-size:1.1rem; margin-bottom:24px;">Êtes-vous sûr de supprimer cet élément ?</p>
+      <button id="cancel-delete" class="btn btn-secondary" style="margin-right:16px;">Annuler</button>
+      <button id="confirm-delete" class="btn btn-danger">Supprimer</button>
+    </div>
+  </div>
+  <div id="edit-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:8px; padding:32px 24px; min-width:340px; box-shadow:0 2px 16px rgba(0,0,0,0.18); text-align:center; position:relative;">
+      <div id="edit-form-container"></div>
+    </div>
+  </div>
+  <template id="edit-form-template">
+    <form id="edit-equipement-form" novalidate>
+      <h5 class="mb-3">Modifier l'équipement</h5>
+      <div class="mb-3">
+        <label for="edit-machine" class="form-label">Machine</label>
+        <input type="text" class="form-control" id="edit-machine" name="machine" required>
+      </div>
+      <div class="mb-3">
+        <label for="edit-modele" class="form-label">Modèle</label>
+        <input type="text" class="form-control" id="edit-modele" name="modele" required>
+      </div>
+      <div class="mb-3">
+        <label for="edit-numero" class="form-label">Numéro de série</label>
+        <input type="text" class="form-control" id="edit-numero" name="numero_de_serie" required>
+      </div>
+      <div class="mb-3">
+        <label for="edit-statut" class="form-label">Statut</label>
+        <select class="form-select" id="edit-statut" name="statut" required>
+          <option value="En stock">En stock</option>
+          <option value="Stock bas">Stock bas</option>
+          <option value="Rupture">Rupture</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="edit-etat" class="form-label">État</label>
+        <input type="text" class="form-control" id="edit-etat" name="etat" required>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="button" id="close-edit-modal" class="btn btn-secondary me-2">Annuler</button>
+        <button type="submit" class="btn btn-danger">Enregistrer</button>
+      </div>
+    </form>
+  </template>
+  <!-- Bootstrap JS (pour les animations et composants interactifs) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6DQD1KQ9Q8cbh6wr6LrZ8p1ztB1zBOeEnQyZ0P5hF6Q" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menu = document.getElementById('context-menu');
+    let currentRow = null;
+
+    document.querySelectorAll('.equipement-row').forEach(row => {
+      row.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        currentRow = row;
+        menu.style.display = 'block';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    document.getElementById('edit-item').addEventListener('click', function() {
+      menu.style.display = 'none';
+      // Clone le template et l'affiche dans la modale
+      const template = document.getElementById('edit-form-template');
+      const container = document.getElementById('edit-form-container');
+      container.innerHTML = '';
+      container.appendChild(template.content.cloneNode(true));
+      document.getElementById('edit-modal').style.display = 'flex';
+
+      // Fermer la modale sur "Annuler"
+      container.querySelector('#close-edit-modal').onclick = function() {
+        document.getElementById('edit-modal').style.display = 'none';
+      };
+
+      // (Optionnel) Pré-remplir les champs avec les valeurs de la ligne sélectionnée
+      if (currentRow) {
+        container.querySelector('#edit-machine').value = currentRow.children[0].textContent.trim();
+        container.querySelector('#edit-modele').value = currentRow.children[1].textContent.trim();
+        container.querySelector('#edit-numero').value = currentRow.children[2].textContent.trim();
+        container.querySelector('#edit-statut').value = currentRow.children[3].textContent.trim();
+        container.querySelector('#edit-etat').value = currentRow.children[4].textContent.trim();
+      }
+
+      // (Optionnel) Gérer la soumission du formulaire
+      container.querySelector('#edit-equipement-form').onsubmit = function(e) {
+        e.preventDefault();
+
+        // Récupère les valeurs
+        const machine = container.querySelector('#edit-machine').value.trim();
+        const modele = container.querySelector('#edit-modele').value.trim();
+        const numero = container.querySelector('#edit-numero').value.trim();
+        const statut = container.querySelector('#edit-statut').value;
+        const etat = container.querySelector('#edit-etat').value.trim();
+
+        // Validation
+        let errors = [];
+        if (!machine) errors.push("Le champ 'Machine' est requis.");
+        if (!modele) errors.push("Le champ 'Modèle' est requis.");
+        if (!numero) errors.push("Le champ 'Numéro de série' est requis.");
+        else if (!/^[a-zA-Z0-9\-]+$/.test(numero)) errors.push("Le numéro de série doit être alphanumérique.");
+        if (!statut) errors.push("Le champ 'Statut' est requis.");
+        if (!etat) errors.push("Le champ 'État' est requis.");
+
+        // Affiche les erreurs ou valide
+        let errorDiv = container.querySelector('.edit-form-errors');
+        if (!errorDiv) {
+          errorDiv = document.createElement('div');
+          errorDiv.className = 'edit-form-errors text-danger mb-2';
+          container.querySelector('form').insertBefore(errorDiv, container.querySelector('form').firstChild);
+        }
+        if (errors.length > 0) {
+          errorDiv.innerHTML = errors.join('<br>');
+          return;
+        } else {
+          errorDiv.innerHTML = '';
+        }
+
+        // Si tout est OK, tu peux envoyer les données (AJAX ou autre)
+        console.log('ID envoyé pour modification:', currentRow ? currentRow.dataset.id : '');
+        fetch('/modifier_equipement/' + (currentRow ? currentRow.dataset.id : ''), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: new URLSearchParams({
+            machine: machine,
+            modele: modele,
+            numero_serie: numero,
+            statut: statut,
+            etat: etat
+          })
+        })
+        .then(response => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            response.text().then(text => {
+              errorDiv.innerHTML = "Erreur lors de la modification :<br>" + text;
+            });
+          }
+        });
+      };
+    });
+    document.getElementById('delete-item').addEventListener('click', function() {
+      menu.style.display = 'none';
+      document.getElementById('confirm-modal').style.display = 'flex';
+    });
+    document.getElementById('cancel-delete').addEventListener('click', function() {
+      document.getElementById('confirm-modal').style.display = 'none';
+    });
+    document.getElementById('confirm-delete').addEventListener('click', function() {
+      const id = currentRow ? currentRow.dataset.id : '';
+      if (id) {
+        // Redirige vers la route de suppression (GET)
+        window.location.href = '/supprimer_equipemnt/' + id;
+      }
+      document.getElementById('confirm-modal').style.display = 'none';
+    });
+  });
+  document.getElementById('export-excel').addEventListener('click', function() {
+    var table = document.querySelector('.table');
+    var wb = XLSX.utils.table_to_book(table, {sheet:"Équipements"});
+    XLSX.writeFile(wb, 'equipements.xlsx');
+});
+  </script>
+</body>
+</html> 

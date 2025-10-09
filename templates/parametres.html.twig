@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooredoo - Gestion des Stocks</title>
+
+  <!-- Google Fonts (Roboto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS (à charger avant ton CSS perso) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Ton CSS personnalisé (toujours en dernier pour qu’il ne soit pas écrasé) -->
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar shadow-sm rounded-end animate__animated animate__fadeInLeft">
+      <div class="sidebar-header">
+        <div><img src ="{{asset('images/ooredoo4.png')}}" width="175" height="48" ></div>
+      </div>
+      <nav>
+       <ul>
+          <li><a href="{{path('app_')}}" style="text-decoration:none; color:inherit;"> Tableau De Bord </a></li>
+          <li><a href="{{ path('ajouter_equipement') }}" style="text-decoration:none; color:inherit;">Ajouter Des Equipements</a></li>
+          <li><a href="{{ path('statistiques') }}"style="text-decoration:none; color:inherit;">Statistiques</a></li>
+          <li class="active"><a href="{{ path('parametres') }}"style="text-decoration:none; color:inherit;"> Paramètres </a></li>
+          <li><a href="{{ path('predire_panne') }}"style="text-decoration:none; color:inherit;"> Prédire Une Panne </a></li>
+          <li><a href="{{ path('logout') }}"style="text-decoration:none; color:inherit;"> Se Déconnecter </a></li>
+
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+        <header class="main-header d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown animate__delay-1s">
+            <h1 class="fw-bold text-danger">Paramètres</h1>
+          </header>
+        <div class="account-actions" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 2rem; align-items: center;">
+          <button type="button" class="action-btn btn btn-light w-100 py-3 text-dark border border-secondary"><a href = "{{ path ('parametre_email') }}" style="text-decoration:none; color:inherit;"> Changer Email</a></button>
+          <button type="button" class="action-btn btn btn-light w-100 py-3 text-dark border border-secondary"><a href = "{{ path ('parametre_nom_utilisateur') }}" style="text-decoration:none; color:inherit;">Changer Nom D'Utilisateur</a></button>
+          <button type="button" class="action-btn btn btn-light w-100 py-3 text-dark border border-secondary"><a href = "{{ path ('parametre_mot_de_passe') }}" style="text-decoration:none; color:inherit;">Changer Mot De Passe</a></button>
+          <button type="button" class="action-btn btn btn-danger w-100 py-3" onclick="ouvrirModaleSuppression()">Supprimer Le Compte</button>
+        </div>
+      
+    </main>
+  </div>
+  <!-- Bootstrap JS (pour les animations et composants interactifs) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6DQD1KQ9Q8cbh6wr6LrZ8p1ztB1zBOeEnQyZ0P5hF6Q" crossorigin="anonymous"></script>
+  <script>
+    // Validation Bootstrap custom
+    (() => {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault(); // Empêche l’envoi si invalide
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  </script>
+  
+  <div id="modaleSuppression" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fermerModaleSuppression()">&times;</span>
+    <h4>Confirmation de suppression</h4>
+    <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="fermerModaleSuppression()">Annuler</button>
+      <form method="post" action="{{ path('supprimer_compte') }}">
+        <button type="submit" class="btn btn-danger">Confirmer</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 9999; 
+  left: 0; top: 0; width: 100%; height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+}
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto; 
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: relative;
+}
+.close {
+  color: #aaa;
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+
+<script>
+function ouvrirModaleSuppression() {
+  document.getElementById('modaleSuppression').style.display = 'block';
+}
+function fermerModaleSuppression() {
+  document.getElementById('modaleSuppression').style.display = 'none';
+}
+// Fermer la modale si on clique en dehors
+window.onclick = function(event) {
+  var modal = document.getElementById('modaleSuppression');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+</body>
+</html> 

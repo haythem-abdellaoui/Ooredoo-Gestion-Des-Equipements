@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooredoo Login</title>
+  <link rel="stylesheet" href="{{ asset('css/style_inscription.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <img src="{{ asset('images/ooredoo_logo-modified.png') }}" alt="Logo Ooredoo" class="ooredoo-logo" />
+    </div>
+    <form class="login-form" method="POST" action="{{ path('mot_de_passe_oublie2') }}" novalidate>
+      <h2 style="font-size: 0.9rem; text-align: center; margin-bottom: 0.2rem;">Veuillez saisir le code de récupération</h2>
+      <h2 style="font-size: 0.9rem; text-align: center; margin-top: 0;"></h2>
+      <div class="input-group">
+        <input type="text" id="code_recuperation" name="code_recuperation" required autocomplete="off">
+        <label for="code_recuperation">Code de de récupération</label>
+        {% if erreur %}
+          <div class="error-message" id="error-verification_code">{{ erreur }}</div>
+       {% endif %}
+      </div>
+      <button type="submit" class="login-btn">Continuer</button>
+      <button type="button" class="signup-btn"><a href="{{path ('login')}}" style="text-decoration:none; color:inherit;">Retourner </a></button>
+    </form>
+    <div class="bubbles">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <script src="{{ asset('javascript/script.js') }}"></script>
+</body>
+</html> 

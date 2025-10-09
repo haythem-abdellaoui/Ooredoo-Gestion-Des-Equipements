@@ -1,0 +1,326 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff0033 0%, #fff 100%);
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .login-container {
+    background: rgba(255,255,255,0.95);
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(255,0,51,0.2);
+    padding: 4rem 3.5rem 3.5rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+    min-width: 430px;
+    min-height: 540px;
+    z-index: 1;
+  }
+  
+  .logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .ooredoo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff0033;
+    letter-spacing: 0.2em;
+    background: white;
+    border-radius: 2rem;
+    padding: 0.3rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(255,0,51,0.08);
+    animation: popIn 1s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+  
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .login-form h2 {
+    color: #ff0033;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .input-row {
+    display: flex;
+    gap: 4.2rem;
+    width: 100%;
+  }
+  .input-row .input-group {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+  .input-group {
+    position: relative;
+    margin-bottom: 0.5rem;
+    width: 85%;
+    min-width: 220px;
+    max-width: 320px;
+  }
+  .input-group input {
+    width: 105%;
+    margin-left: -10px;
+    padding: 1rem 1rem 1rem 1.2rem;
+    border: 2px solid #ff0033;
+    border-radius: 1.5rem;
+    outline: none;
+    font-size: 1rem;
+    background: transparent;
+    color: #d1002f;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: border 0.3s, box-shadow 0.3s, color 0.3s, text-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(255,0,51,0.05);
+    text-shadow: 0 1px 6px rgba(255,0,51,0.08);
+  }
+  .input-group input:focus {
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #ff0033, 0 2px 12px rgba(255,0,51,0.10);
+    color: #ff0033;
+    background: rgba(255,0,51,0.03);
+    text-shadow: 0 2px 12px rgba(255,0,51,0.13);
+    animation: inputFocusPop 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+  .input-group label {
+    position: absolute;
+    left: 1.2rem;
+    top: 1.1rem;
+    color: #ff0033;
+    background: white;
+    padding: 0 0.3rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: 0.3s;
+  }
+  .input-group input:focus + label,
+  .input-group input:not(:placeholder-shown):not(:focus) + label {
+    top: -0.7rem;
+    left: 1rem;
+    font-size: 0.85rem;
+    color: #fff;
+    background: #ff0033;
+    padding: 0 0.5rem;
+    box-shadow: 0 2px 8px rgba(255,0,51,0.08);
+  }
+  .input-group .toggle-password {
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.2rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+  }
+  .input-group .toggle-password:hover,
+  .input-group .toggle-password:focus {
+    background: rgba(255,0,51,0.08);
+    border-radius: 50%;
+  }
+  .input-group .toggle-password svg {
+    display: block;
+    stroke: #ff0033;
+    transition: stroke 0.2s;
+  }
+  .input-group .toggle-password.active svg {
+    stroke: #fff;
+  }
+  .login-btn {
+    background: linear-gradient(90deg, #ff0033 60%, #fff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 1.5rem;
+    padding: 0.9rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255,0,51,0.12);
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    margin-top: 0.5rem;
+    width: 100%;
+    align-self: stretch;
+  }
+  .login-btn:hover {
+    background: #fff;
+    color: #ff0033;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(255,0,51,0.18);
+  }
+  .bubbles {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .bubbles span {
+    position: absolute;
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #ff0033;
+    opacity: 0.15;
+    border-radius: 50%;
+    animation: floatBubble 6s infinite ease-in-out;
+  }
+  .bubbles span:nth-child(1) {
+    left: 10%; top: 80%; animation-delay: 0s; }
+  .bubbles span:nth-child(2) {
+    left: 80%; top: 60%; animation-delay: 1.2s; }
+  .bubbles span:nth-child(3) {
+    left: 50%; top: 90%; animation-delay: 2.4s; }
+  .bubbles span:nth-child(4) {
+    left: 70%; top: 20%; animation-delay: 3.6s; }
+  .bubbles span:nth-child(5) {
+    left: 20%; top: 30%; animation-delay: 4.8s; }
+  @keyframes floatBubble {
+    0% { transform: translateY(0) scale(1); opacity: 0.15; }
+    50% { transform: translateY(-60px) scale(1.2); opacity: 0.25; }
+    100% { transform: translateY(0) scale(1); opacity: 0.15; }
+  }
+  @media (max-width: 500px) {
+    .login-container {
+      min-width: 90vw;
+      padding: 2rem 0.5rem 1.5rem 0.5rem;
+    }
+    .logo .ooredoo {
+      font-size: 2rem;
+    }
+  }
+  .signup-btn {
+    background: #fff;
+    color: #ff0033;
+    border: 2px solid #ff0033;
+    border-radius: 1.5rem;
+    padding: 0.9rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.7rem;
+    transition: background 0.3s, color 0.3s, border 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(255,0,51,0.08);
+    width: 100%;
+  }
+  .signup-btn:hover, .signup-btn:focus {
+    background: #ff0033;
+    color: #fff;
+    border: 2px solid #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(255,0,51,0.18);
+  }
+  .forgot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    text-align: right;
+    margin: 0.2rem 0 0.7rem auto;
+    color: #fff;
+    background: linear-gradient(90deg, #ff0033 60%, #fff 100%);
+    border-radius: 1.2rem 1.2rem 1.2rem 0.4rem;
+    padding: 0.35em 1.1em 0.35em 0.9em;
+    font-size: 1.01rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 12px rgba(255,0,51,0.10);
+    position: relative;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    animation: forgotPop 0.9s cubic-bezier(.68,-0.55,.27,1.55);
+    transition: background 0.3s, color 0.3s, box-shadow 0.2s, transform 0.2s;
+  }
+  .forgot-link::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0.3em;
+    background: #fff;
+    opacity: 0.12;
+    border-radius: 1.2rem 0 0 1.2rem;
+  }
+  .forgot-link svg {
+    width: 1.1em;
+    height: 1.1em;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.2;
+    transition: transform 0.3s;
+  }
+  .forgot-link:hover, .forgot-link:focus {
+    background: linear-gradient(90deg, #fff 60%, #ff0033 100%);
+    color: #ff0033;
+    box-shadow: 0 6px 24px rgba(255,0,51,0.18);
+    transform: translateY(-2px) scale(1.04);
+  }
+  .forgot-link:hover svg, .forgot-link:focus svg {
+    stroke: #ff0033;
+    transform: rotate(-18deg) scale(1.15);
+  }
+  @keyframes forgotPop {
+    0% { transform: scale(0.7) translateY(20px); opacity: 0; }
+    80% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+    100% { transform: scale(1) translateY(0); }
+  }
+  @keyframes inputFocusPop {
+    0% { transform: scale(0.98); }
+    80% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+  .ooredoo-logo {
+    display: block;
+    margin: 6 auto 1.2rem auto;
+    max-width: 320px;
+    max-height: 110px;
+    width: auto;
+    height: auto;
+    animation: popIn 1s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+  @media (max-width: 600px) {
+    .input-row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  .input-group input[type="password"],
+  .input-group input[type="text"].password-toggled {
+    max-width: 355px;
+    transition: max-width 0.3s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+  .input-group input.password-toggled {
+    max-width: 160px;
+  } 
+  .error-message {
+    color: #d1002f;
+    font-size: 0.97em;
+    margin-top: 0.2em;
+    min-height: 1.2em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    padding-left: 0.2em;
+    transition: color 0.2s;
+  }
+
