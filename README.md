@@ -18,6 +18,7 @@ Elle permet de gérer efficacement les comptes utilisateurs et les équipements,
 
 ### Backend
 - Symfony 6.4 (PHP)
+- Python + FastAPI pour le module prédictif
 - MySQL
 
 ### Other Tools
