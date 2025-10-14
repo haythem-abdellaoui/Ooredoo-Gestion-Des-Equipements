@@ -29,32 +29,53 @@ Elle permet de gérer efficacement les comptes utilisateurs et les équipements,
 
 ## Directory Structure
 /Ooredoo
+
 ├── ai/                  # Module d'intelligence artificielle pour la prédiction des pannes
+
 ├── assets/              # Fichiers statiques (images, CSS, JS)
+
 ├── bin/                 # Scripts exécutables du projet
+
 ├── config/              # Configuration du projet Symfony
+
 ├── migrations/          # Fichiers de migration de la base de données
+
 ├── public/              # Répertoire accessible publiquement (index.php, fichiers web)
+
 ├── src/                 # Code source principal (contrôleurs, entités, services)
+
 ├── templates/           # Templates Twig pour le rendu des vues
+
 ├── tests/               # Tests unitaires et fonctionnels
+
 ├── translations/        # Fichiers de traduction
+
 ├── var/                 # Fichiers temporaires et cache
+
 ├── vendor/              # Dépendances installées via Composer
+
 ├── .env                 # Variables d’environnement
+
 ├── composer.json        # Définition des dépendances PHP
+
 ├── composer.lock        # Version exacte des dépendances installées
+
 ├── symfony.lock         # Fichier de verrouillage pour Symfony
+
 ├── phpunit.dist.xml     # Configuration PHPUnit pour les tests
+
 ├── compose.yaml         # Configuration Docker Compose
+
 ├── compose.override.yaml # Overrides Docker Compose
+
 ├── importmap.php        # Configuration des assets pour importmap
+
 
 
 
 ## Getting Started
 1. Cloner le dépôt :  
-   `git clone https://github.com/SiHaythem420/SmartMoby_Web.git`
+   `git clone https://github.com/haythem-abdellaoui/Ooredoo-Gestion-Des-Equipements.git`
 
 2. Installer les dépendances :  
    `composer install`
